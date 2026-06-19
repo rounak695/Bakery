@@ -231,6 +231,7 @@
             });
 
             setupDragAndDrop();
+            attachLivePreviewListeners();
         }
 
         function setupDragAndDrop() {
@@ -308,3 +309,39 @@
 
         document.getElementById('saveBtn').addEventListener('click', saveChanges);
         document.getElementById('saveTopBtn').addEventListener('click', saveChanges);
+function attachLivePreviewListeners() {
+    const inputs = document.querySelectorAll('#app-content input, #app-content textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            if (!fullData) return;
+            
+            fullData.welcome.text = document.getElementById('welcomeText').value;
+
+            fullData.menuItems.forEach((item, index) => {
+                const titleEl = document.getElementById('menu_title_' + index);
+                if (titleEl) item.title = titleEl.value;
+                const descEl = document.getElementById('menu_desc_' + index);
+                if (descEl) item.desc = descEl.value;
+                const priceEl = document.getElementById('menu_price_' + index);
+                if (priceEl) item.price = priceEl.value;
+                const imgEl = document.getElementById('menu_img_' + index);
+                if (imgEl) item.img = imgEl.value;
+            });
+
+            fullData.instagram.forEach((img, index) => {
+                const instaEl = document.getElementById('insta_img_' + index);
+                if (instaEl) fullData.instagram[index] = instaEl.value;
+            });
+
+            const iframe = document.getElementById('preview-frame');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'CMS_UPDATE', cmsData: fullData }, '*');
+            }
+        });
+    });
+}
+
+document.getElementById('loadPreviewBtn').addEventListener('click', () => {
+    const url = document.getElementById('previewUrl').value;
+    document.getElementById('preview-frame').src = url;
+});

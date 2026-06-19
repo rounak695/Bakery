@@ -12,29 +12,37 @@
             --text: #1a1a1a;
             --border: 3px solid #1a1a1a;
             --accent: #ff6b6b;
-            --shadow: 6px 6px 0px #1a1a1a;
+            --shadow: 4px 4px 0px #1a1a1a;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            padding: 2rem;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 450px 1fr;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 800px;
-            width: 100%;
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #fff9f0; /* Warm cream */
+            border-right: var(--border);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .sidebar-content {
+            padding: 1.5rem;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             text-transform: uppercase;
             letter-spacing: -1px;
+            margin-top: 0;
             margin-bottom: 2rem;
             text-align: center;
         }
@@ -43,15 +51,16 @@
             background: var(--surface);
             border: var(--border);
             box-shadow: var(--shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .card h2 {
             margin-top: 0;
             border-bottom: var(--border);
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
         }
 
         label {
@@ -59,6 +68,7 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             margin-top: 1rem;
+            font-size: 0.9rem;
         }
 
         input, textarea {
@@ -66,32 +76,33 @@
             padding: 0.75rem;
             border: var(--border);
             font-family: 'Inter', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             box-sizing: border-box;
             background: #fff;
         }
 
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
         }
 
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 2px 2px 0px var(--accent);
         }
 
         button {
             background-color: var(--accent);
             color: white;
             border: var(--border);
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
             box-shadow: 4px 4px 0px #1a1a1a;
-            transition: transform 0.1s;
+            transition: transform 0.1s, box-shadow 0.1s;
             margin-top: 1rem;
             width: 100%;
         }
@@ -112,6 +123,7 @@
             padding: 1rem;
             border: var(--border);
             display: none;
+            margin-bottom: 1.5rem;
         }
 
         .success { background-color: #d4edda; color: #155724; }
@@ -122,23 +134,27 @@
             padding: 1rem;
             margin-bottom: 1rem;
             position: relative;
+            background: #fafafa;
         }
 
         .item-title {
             font-weight: 800;
             margin-top: 0;
             color: var(--accent);
+            font-size: 1rem;
         }
 
         /* Drag and Drop styles */
         .drop-zone {
             border: 2px dashed var(--accent);
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
             cursor: pointer;
             background-color: #fff0f0;
             margin-top: 1rem;
             transition: background-color 0.3s;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .drop-zone.dragover {
@@ -148,9 +164,10 @@
         .image-preview {
             max-width: 100%;
             height: auto;
-            max-height: 200px;
+            max-height: 150px;
             margin-top: 1rem;
             display: block;
+            border: var(--border);
         }
 
         #app-content {
@@ -161,54 +178,101 @@
             text-align: center;
         }
 
+        /* Preview Pane Styles */
+        .preview-pane {
+            display: flex;
+            flex-direction: column;
+            background-color: #e0e0e0;
+        }
+
+        .preview-header {
+            background: var(--surface);
+            border-bottom: var(--border);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .preview-header label {
+            margin: 0;
+            white-space: nowrap;
+        }
+        
+        .preview-header input {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .preview-header button {
+            width: auto;
+            margin: 0;
+            padding: 0.5rem 1rem;
+        }
+
+        iframe {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Bakery CMS</h1>
+    <!-- Sidebar Editor -->
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <h1>Bakery CMS</h1>
 
-        <div id="status"></div>
+            <div id="status"></div>
 
-        <!-- Setup instructions for developer -->
-        <div class="card" id="setup-card" style="background: #fff3cd; border-color: #ffeeba;">
-            <h2>Developer Setup (Action Required)</h2>
-            <p>To make Google Login work, you must set up your Client ID and API Key.</p>
-            <ol>
-                <li>Go to Google Cloud Console.</li>
-                <li>Create an OAuth Client ID (Web Application).</li>
-                <li>Add your Vercel URL to <strong>Authorized JavaScript origins</strong>.</li>
-                <li>Open this `index.html` file in a text editor and paste your Client ID at the top of the app.js file!</li>
-            </ol>
-        </div>
-
-        <div id="login-section" class="card">
-            <h2>Log in to Manage Website</h2>
-            <p>Please log in with your Google account to access your Google Drive storage.</p>
-            <button id="auth-btn">Authorize Google Drive</button>
-        </div>
-
-        <div id="app-content">
-            <button id="saveTopBtn" class="btn-secondary" style="margin-bottom: 2rem;">Publish Changes</button>
-
-            <div class="card" id="welcome-card">
-                <h2>Welcome Section</h2>
-                <label>Text (HTML allowed)</label>
-                <textarea id="welcomeText"></textarea>
+            <!-- Setup instructions for developer -->
+            <div class="card" id="setup-card" style="background: #fff3cd; border-color: #ffeeba;">
+                <h2>Developer Setup</h2>
+                <p style="font-size: 0.9rem;">To make Google Login work, paste your Client ID at the top of the `app.js` file!</p>
             </div>
 
-            <div class="card" id="menu-card">
-                <h2>Menu Items</h2>
-                <div id="menuItemsList"></div>
+            <div id="login-section" class="card">
+                <h2>Log in to Manage Website</h2>
+                <p style="font-size: 0.9rem;">Please log in with your Google account to access your Google Drive storage.</p>
+                <button id="auth-btn">Authorize Google Drive</button>
             </div>
 
-            <div class="card" id="instagram-card">
-                <h2>Instagram Images</h2>
-                <div id="instagramList"></div>
-            </div>
+            <div id="app-content">
+                <button id="saveTopBtn" class="btn-secondary" style="margin-bottom: 2rem;">Publish Changes</button>
 
-            <button id="saveBtn" class="btn-secondary">Publish Changes</button>
+                <div class="card" id="welcome-card">
+                    <h2>Welcome Section</h2>
+                    <label>Text (HTML allowed)</label>
+                    <textarea id="welcomeText"></textarea>
+                </div>
+
+                <div class="card" id="menu-card">
+                    <h2>Menu Items</h2>
+                    <div id="menuItemsList"></div>
+                </div>
+
+                <div class="card" id="instagram-card">
+                    <h2>Instagram Images</h2>
+                    <div id="instagramList"></div>
+                </div>
+
+                <button id="saveBtn" class="btn-secondary">Publish Changes</button>
+            </div>
         </div>
+    </div>
+
+    <!-- Live Preview Pane -->
+    <div class="preview-pane">
+        <div class="preview-header">
+            <label for="previewUrl">Live Preview URL:</label>
+            <input type="text" id="previewUrl" value="https://bakery-iota-cyan.vercel.app/" placeholder="e.g., http://127.0.0.1:5500/index.html">
+            <button id="loadPreviewBtn">Reload</button>
+        </div>
+        <iframe id="preview-frame" src="https://bakery-iota-cyan.vercel.app/"></iframe>
     </div>
 
     <script src="app.js"></script>
