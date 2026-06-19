@@ -163,9 +163,9 @@
 
     </style>
     <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()" async defer></script>
     <!-- Google APIs Client Library -->
-    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()" async defer></script>
 </head>
 <body>
 
@@ -563,11 +563,7 @@
         document.getElementById('saveBtn').addEventListener('click', saveChanges);
         document.getElementById('saveTopBtn').addEventListener('click', saveChanges);
 
-        // Load APIs script tags triggers these
-        window.onload = () => {
-            if(typeof gapi !== 'undefined') gapiLoaded();
-            if(typeof google !== 'undefined') gisLoaded();
-        }
+        // APIs are loaded via onload attributes on the script tags
     </script>
 </body>
 </html>
