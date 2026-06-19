@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery CMS Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafafa;
+            --surface: #fff;
+            --text: #1a1a1a;
+            --border: 3px solid #1a1a1a;
+            --accent: #ff6b6b;
+            --shadow: 6px 6px 0px #1a1a1a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--surface);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            border-bottom: var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: var(--border);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background: #fff;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: var(--border);
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #1a1a1a;
+            transition: transform 0.1s;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #1a1a1a;
+        }
+
+        #status {
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .success { color: #2ecc71; }
+        .error { color: #e74c3c; }
+        
+        .item-group {
+            border: 2px dashed #ccc;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .item-title {
+            font-weight: 800;
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Bakery CMS
+            <button id="saveTopBtn" style="width: auto; margin:0; padding: 0.5rem 1rem; font-size: 1rem;">Save All Changes</button>
+        </h1>
+        
+        <div id="status"></div>
+
+        <div class="card" id="welcome-card">
+            <h2>Welcome Section</h2>
+            <label>Text (HTML allowed)</label>
+            <textarea id="welcomeText"></textarea>
+        </div>
+
+        <div class="card" id="menu-card">
+            <h2>Menu Items</h2>
+            <div id="menuItemsList"></div>
+        </div>
+
+        <div class="card" id="instagram-card">
+            <h2>Instagram Images</h2>
+            <div id="instagramList"></div>
+        </div>
+
+        <button id="saveBtn">Save All Changes</button>
+    </div>
+
+    <script>
+        let fullData = null;
+
+        // Load existing data
+        fetch('/cms-data.json')
+            .then(res => res.json())
+            .then(data => {
+                fullData = data;
+                renderForm(data);
+            })
+            .catch(err => {
+                document.getElementById('status').innerText = "Error loading data.";
+                document.getElementById('status').className = "error";
+            });
+
+        function renderForm(data) {
+            // Welcome
+            document.getElementById('welcomeText').value = data.welcome.text;
+
+            // Menu Items
+            const menuList = document.getElementById('menuItemsList');
+            menuList.innerHTML = '';
+            data.menuItems.forEach((item, index) => {
+                menuList.innerHTML += `
+                    <div class="item-group">
+                        <h3 class="item-title">Item ${index + 1}</h3>
+                        <label>Title</label>
+                        <input type="text" id="menu_title_${index}" value="${item.title}">
+                        
+                        <label>Description</label>
+                        <input type="text" id="menu_desc_${index}" value="${item.desc}">
+                        
+                        <label>Price</label>
+                        <input type="text" id="menu_price_${index}" value="${item.price}">
+                        
+                        <label>Image URL</label>
+                        <input type="text" id="menu_img_${index}" value="${item.img}">
+                    </div>
+                `;
+            });
+
+            // Instagram
+            const instaList = document.getElementById('instagramList');
+            instaList.innerHTML = '';
+            data.instagram.forEach((img, index) => {
+                instaList.innerHTML += `
+                    <label>Image ${index + 1} URL</label>
+                    <input type="text" id="insta_img_${index}" value="${img}" style="margin-bottom:0.5rem;">
+                `;
+            });
+        }
+
+        function saveChanges() {
+            if (!fullData) return;
+            
+            const btn = document.getElementById('saveBtn');
+            btn.innerText = "Saving...";
+
+            // Update local object
+            fullData.welcome.text = document.getElementById('welcomeText').value;
+
+            fullData.menuItems.forEach((item, index) => {
+                item.title = document.getElementById(`menu_title_${index}`).value;
+                item.desc = document.getElementById(`menu_desc_${index}`).value;
+                item.price = document.getElementById(`menu_price_${index}`).value;
+                item.img = document.getElementById(`menu_img_${index}`).value;
+            });
+
+            fullData.instagram.forEach((img, index) => {
+                fullData.instagram[index] = document.getElementById(`insta_img_${index}`).value;
+            });
+
+            // POST to server
+            fetch('/api/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fullData)
+            })
+            .then(res => res.json())
+            .then(res => {
+                const status = document.getElementById('status');
+                if (res.status === 'success') {
+                    status.innerText = "Changes saved successfully!";
+                    status.className = "success";
+                } else {
+                    status.innerText = "Error: " + res.message;
+                    status.className = "error";
+                }
+                btn.innerText = "Save All Changes";
+                setTimeout(() => status.innerText = "", 3000);
+            })
+            .catch(err => {
+                document.getElementById('status').innerText = "Network Error.";
+                document.getElementById('status').className = "error";
+                btn.innerText = "Save All Changes";
+            });
+        }
+
+        document.getElementById('saveBtn').addEventListener('click', saveChanges);
+        document.getElementById('saveTopBtn').addEventListener('click', saveChanges);
+    </script>
+</body>
+</html>

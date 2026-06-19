@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cakebakebybesties - Home</title>
+    <meta name="description" content="Delicious cakes and bakes by besties.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo-text">Cakebakebybesties</a>
+        <button class="menu-toggle" aria-label="Toggle Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Menu</a>
+            <a href="#" class="nav-link">About Us</a>
+            <a href="#" class="nav-link">Blogs</a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="video-container" id="videoContainer">
+            <!-- The preview video plays muted and loops by default (GIF mode) -->
+            <video 
+                id="heroVideo" 
+                class="hero-video" 
+                poster="hero section/poster.jpg"
+                playsinline 
+                muted 
+                autoplay 
+                loop
+            >
+                <source src="hero section/preview.mp4" type="video/mp4" id="videoSource">
+                Your browser does not support the video tag.
+            </video>
+            
+            <div class="video-overlay" id="videoOverlay"></div>
+            
+            <!-- Minimal Play button overlay -->
+            <button id="playButton" class="play-btn" aria-label="Play full video">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+                <span>Watch Full Video</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MENU SECTION -->
+    <section id="menu" class="menu-section">
+        <div class="container">
+            <!-- Categories -->
+            <div class="menu-categories" id="menu-categories">
+                <!-- Data will be injected here via CMS/JS -->
+                <div class="loading-spinner">Loading Menu...</div>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="menu-grid" id="menu-grid">
+                <!-- Data will be injected here via CMS/JS -->
+            </div>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="welcome-section" id="welcome-section">
+            <div class="container">
+                <h2 class="welcome-title">Welcome</h2>
+                <div class="welcome-content" id="welcome-content">
+                    <!-- Data will be injected here via CMS/JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Seasonal Selections -->
+        <div class="seasonal-section">
+            <div class="container seasonal-container" id="seasonal-container">
+                <!-- Data will be injected here via CMS/JS -->
+            </div>
+        </div>
+
+        <!-- Instagram Feed -->
+        <div class="instagram-section">
+            <div class="container">
+                <div class="insta-header">
+                    <img src="hero section/LOGO.jpg" alt="Instagram Icon" class="insta-icon-placeholder" style="width:50px; height:50px; border-radius:50%; object-fit:cover; margin:0 auto 10px auto; display:block;">
+                    <h2>Follow Us On Instagram</h2>
+                    <a href="https://www.instagram.com/cakebakebybesties_/" target="_blank" class="insta-handle">@cakebakebybesties_</a>
+                </div>
+                <div class="insta-grid" id="insta-grid">
+                    <!-- Data will be injected here via CMS/JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

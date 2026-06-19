@@ -1,0 +1,30 @@
+{
+  "categories": [
+    { "id": 1, "name": "Bread", "icon": "https://cdn-icons-png.flaticon.com/512/3014/3014457.png" },
+    { "id": 2, "name": "Cakes & Pies", "icon": "https://cdn-icons-png.flaticon.com/512/2666/2666649.png" },
+    { "id": 3, "name": "Cookies", "icon": "https://cdn-icons-png.flaticon.com/512/575/575396.png" },
+    { "id": 4, "name": "Pastries", "icon": "https://cdn-icons-png.flaticon.com/512/2916/2916301.png" }
+  ],
+  "menuItems": [
+    { "id": 1, "title": "Custom Theme Cake", "desc": "Handcrafted 2-tier chocolate cake", "price": "$45", "img": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80" },
+    { "id": 2, "title": "Signature Brownies", "desc": "Gooey, rich chocolate brownies", "price": "$15", "img": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80" },
+    { "id": 3, "title": "Fruit Tart", "desc": "Fresh seasonal fruits on vanilla custard", "price": "$25", "img": "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=600&q=80" }
+  ],
+  "welcome": {
+    "text": "Family-owned and operated, Cakebakebybesties is your premier home bakery. We are committed to baking authentic homemade items daily with only the healthiest ingredients.<br><br>Offering a wide variety of specialty cookies, cakes, pastries and pies. We have perfected baked goods with family recipes handed down over generations.<br><br>Visit our Instagram or order online to enjoy the delicious sweet tastes anywhere."
+  },
+  "seasonal": {
+    "title": "Seasonal Selections",
+    "subtitle": "Summertime Specialties",
+    "items": ["• Lemon Squares", "• Strawberry Shortcake", "• Mango Cheesecake"],
+    "image": "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=600&q=80"
+  },
+  "instagram": [
+    "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1571115177098-24eb437a1026?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1542826438-bd32f43d626f?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?auto=format&fit=crop&w=400&q=80"
+  ]
+}

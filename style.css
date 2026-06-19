@@ -1,0 +1,457 @@
+:root {
+    --primary-bg: #0a0a0a;
+    --nav-bg: rgba(10, 10, 10, 0.4);
+    --text-color: #f5f5f5;
+    --accent: #d4af37; /* Subtle gold for a premium bakery feel */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    background-color: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.8rem;
+    color: var(--text-color);
+    text-decoration: none;
+    line-height: 1;
+    font-weight: 400;
+}
+
+.menu-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.bar {
+    width: 24px;
+    height: 2px;
+    background-color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(12px);
+    flex-direction: column;
+    padding: 1rem 0;
+}
+
+.nav-links.active {
+    display: flex;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 300;
+    font-size: 1rem;
+    padding: 1.5rem 3rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent);
+}
+
+/* Desktop Navbar */
+@media (min-width: 768px) {
+    .menu-toggle {
+        display: none;
+    }
+    
+    .nav-links {
+        display: flex;
+        position: static;
+        width: auto;
+        flex-direction: row;
+        padding: 0;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+        margin-left: 1rem;
+    }
+}
+
+/* HERO SECTION */
+.hero-section {
+    width: 100%;
+    height: 100vh; /* Full screen cinematic */
+    position: relative;
+    overflow: hidden;
+}
+
+.video-container {
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+/* Minimal Play Button */
+.play-btn {
+    position: absolute;
+    bottom: 3rem;
+    right: 3rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.4s ease;
+}
+
+.play-btn:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.play-icon {
+    width: 54px;
+    height: 54px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    padding: 16px;
+    transition: border-color 0.4s ease;
+}
+
+.play-btn:hover .play-icon {
+    border-color: #fff;
+}
+
+.play-btn span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 300;
+}
+
+/* When playing full video */
+.video-container.playing .play-btn,
+.video-container.playing .video-overlay {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .logo-text {
+        font-size: 2.2rem;
+    }
+    
+    .play-btn {
+        bottom: 2rem;
+        right: 1.5rem;
+    }
+    
+    .play-btn span {
+        display: none; /* Hide text on small screens, keep just icon */
+    }
+}
+
+/* MENU SECTION STYLES */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.menu-section {
+    background-color: #fff;
+    color: var(--primary-bg);
+}
+
+/* Categories */
+.menu-categories {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 4rem 0;
+    flex-wrap: wrap;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    opacity: 0.6;
+}
+
+.category-item.active, .category-item:hover {
+    opacity: 1;
+    transform: translateY(-5px);
+}
+
+.category-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+    object-fit: contain;
+}
+
+.category-name {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+/* Menu Grid */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding-bottom: 5rem;
+}
+
+.menu-card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fafafa;
+}
+
+.menu-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.menu-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.menu-info {
+    padding: 1.5rem;
+}
+
+.menu-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.menu-info p {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.menu-price {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+/* Welcome Section */
+.welcome-section {
+    background-color: #a8d5ba; /* Soft mint green from inspiration */
+    padding: 6rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    color: #2c3e2c;
+}
+
+.welcome-content {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #3a4a3a;
+    font-weight: 300;
+}
+
+/* Seasonal Selections */
+.seasonal-section {
+    background-color: #eebbaf; /* Soft peach from inspiration */
+    padding: 6rem 0;
+    position: relative;
+}
+
+.seasonal-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+}
+
+.seasonal-text {
+    flex: 1;
+}
+
+.seasonal-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #4a2c2a;
+}
+
+.seasonal-subtitle {
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #c93b3b; /* Reddish accent */
+    margin-bottom: 2rem;
+    font-family: 'Dancing Script', cursive;
+}
+
+.seasonal-list {
+    list-style: none;
+    font-size: 1.1rem;
+    line-height: 2;
+    color: #4a2c2a;
+}
+
+.seasonal-image-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.seasonal-image {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* Instagram Feed */
+.instagram-section {
+    padding: 6rem 0;
+    background-color: #fff;
+    text-align: center;
+}
+
+.insta-header {
+    margin-bottom: 3rem;
+}
+
+.insta-header h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.insta-handle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000;
+    text-decoration: none;
+}
+
+.insta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.insta-item {
+    position: relative;
+    padding-bottom: 100%; /* Square aspect ratio */
+    overflow: hidden;
+}
+
+.insta-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.insta-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .menu-categories {
+        gap: 1.5rem;
+    }
+    
+    .category-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .seasonal-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .insta-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
