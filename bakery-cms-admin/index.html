@@ -178,8 +178,7 @@
                 <li>Go to Google Cloud Console.</li>
                 <li>Create an OAuth Client ID (Web Application).</li>
                 <li>Add your Vercel URL to <strong>Authorized JavaScript origins</strong>.</li>
-                <li>Create an API Key.</li>
-                <li>Open this `index.html` file in a text editor and paste your Client ID and API Key at the top of the `<script>` section!</li>
+                <li>Open this `index.html` file in a text editor and paste your Client ID at the top of the `<script>` section!</li>
             </ol>
         </div>
 
@@ -214,18 +213,15 @@
 
     <script>
         // =========================================================================
-        // DEVELOPER: PASTE YOUR CLIENT ID AND API KEY HERE!
+        // DEVELOPER: PASTE YOUR CLIENT ID HERE!
         // =========================================================================
         const CLIENT_ID = '748666461246-codueraeqkgtsuik0m8a0rsd9dpfigo1.apps.googleusercontent.com'; 
         // =========================================================================
 
-        const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
         const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
         let tokenClient;
         let accessToken = null;
-        let gapiInited = false;
-        let gisInited = false;
         let fullData = null;
         let dataFileId = null; // ID of cms-data.json in Drive
 
@@ -256,20 +252,6 @@
             ]
         };
 
-
-        // Initialize APIs
-        function gapiLoaded() {
-            gapi.load('client', initializeGapiClient);
-        }
-
-        async function initializeGapiClient() {
-            await gapi.client.init({
-                discoveryDocs: DISCOVERY_DOCS,
-            });
-            gapiInited = true;
-            checkSetup();
-        }
-
         function gisLoaded() {
             if(CLIENT_ID === 'YOUR_CLIENT_ID_HERE') return;
             tokenClient = google.accounts.oauth2.initTokenClient({
@@ -285,42 +267,32 @@
                     loadOrCreateDataFile();
                 },
             });
-            gisInited = true;
-            checkSetup();
-        }
-
-        function checkSetup() {
-            if (gapiInited && gisInited) {
-                document.getElementById('setup-card').style.display = 'none';
-            }
+            document.getElementById('setup-card').style.display = 'none';
         }
 
         document.getElementById('auth-btn').onclick = () => {
             if(!tokenClient) {
-                alert("Please add your Client ID and API Key to the code first!");
+                alert("Please add your Client ID to the code first!");
                 return;
             }
             tokenClient.requestAccessToken({prompt: 'consent'});
         };
 
-        // --- Drive Operations ---
+        // --- Drive Operations (using fetch) ---
 
         async function loadOrCreateDataFile() {
             showStatus("Looking for database in your Google Drive...", "success");
             try {
-                // Search for cms-data.json
-                const response = await gapi.client.drive.files.list({
-                    q: "name='cms-data.json' and trashed=false",
-                    fields: 'files(id, name)',
-                    spaces: 'drive',
+                const query = encodeURIComponent("name='cms-data.json' and trashed=false");
+                const response = await fetch(`https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name)&spaces=drive`, {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
                 });
+                const data = await response.json();
                 
-                const files = response.result.files;
-                if (files && files.length > 0) {
-                    dataFileId = files[0].id;
+                if (data.files && data.files.length > 0) {
+                    dataFileId = data.files[0].id;
                     await downloadDataFile(dataFileId);
                 } else {
-                    // Create new file
                     await createInitialDataFile();
                 }
             } catch (err) {
@@ -330,11 +302,10 @@
 
         async function downloadDataFile(fileId) {
             try {
-                const response = await gapi.client.drive.files.get({
-                    fileId: fileId,
-                    alt: 'media'
+                const response = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                    headers: { 'Authorization': 'Bearer ' + accessToken }
                 });
-                fullData = response.result;
+                fullData = await response.json();
                 renderForm(fullData);
                 showStatus("Database loaded! Database ID: " + fileId + " (Put this in script.js on main site)", "success");
             } catch (err) {
@@ -363,19 +334,18 @@
                 close_delim;
 
             try {
-                const request = gapi.client.request({
-                    'path': '/upload/drive/v3/files',
-                    'method': 'POST',
-                    'params': {'uploadType': 'multipart'},
-                    'headers': {
+                const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
                         'Content-Type': 'multipart/related; boundary="' + boundary + '"'
                     },
-                    'body': multipartRequestBody
+                    body: multipartRequestBody
                 });
-                const response = await request;
-                dataFileId = response.result.id;
                 
-                // Make it public so the main site can read it
+                const data = await response.json();
+                dataFileId = data.id;
+                
                 await makeFilePublic(dataFileId);
 
                 fullData = defaultData;
@@ -391,7 +361,6 @@
             if (!fullData || !dataFileId) return;
             showStatus("Publishing changes to Google Drive...", "success");
 
-            // Update local object
             fullData.welcome.text = document.getElementById('welcomeText').value;
 
             fullData.menuItems.forEach((item, index) => {
@@ -406,13 +375,17 @@
             });
 
             try {
-                const request = gapi.client.request({
-                    'path': '/upload/drive/v3/files/' + dataFileId,
-                    'method': 'PATCH',
-                    'params': {'uploadType': 'media'},
-                    'body': JSON.stringify(fullData)
+                const response = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${dataFileId}?uploadType=media`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(fullData)
                 });
-                await request;
+                
+                if(!response.ok) throw new Error("Failed to upload");
+                
                 showStatus("Changes published live successfully!", "success");
             } catch(err) {
                 showStatus("Error publishing changes.", "error");
@@ -420,22 +393,24 @@
         }
 
         async function makeFilePublic(fileId) {
-            await gapi.client.drive.permissions.create({
-                fileId: fileId,
-                resource: {
+            await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
                     type: 'anyone',
                     role: 'reader'
-                }
+                })
             });
         }
 
         // --- UI Rendering & Drag Drop ---
 
         function renderForm(data) {
-            // Welcome
             document.getElementById('welcomeText').value = data.welcome.text;
 
-            // Menu Items
             const menuList = document.getElementById('menuItemsList');
             menuList.innerHTML = '';
             data.menuItems.forEach((item, index) => {
@@ -462,7 +437,6 @@
                 `;
             });
 
-            // Instagram
             const instaList = document.getElementById('instagramList');
             instaList.innerHTML = '';
             data.instagram.forEach((img, index) => {
@@ -540,8 +514,6 @@
                 .then(res => res.json())
                 .then(async data => {
                     await makeFilePublic(data.id);
-                    // Standard Google Drive webViewLink doesn't work directly in <img> tags well.
-                    // We use the thumbnail/download endpoint trick.
                     const publicUrl = `https://drive.google.com/uc?export=view&id=${data.id}`;
                     resolve(publicUrl);
                 })
@@ -559,11 +531,7 @@
         document.getElementById('saveBtn').addEventListener('click', saveChanges);
         document.getElementById('saveTopBtn').addEventListener('click', saveChanges);
 
-        // APIs are loaded via onload attributes on the script tags
     </script>
-    <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()" async defer></script>
-    <!-- Google APIs Client Library -->
-    <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()" async defer></script>
 </body>
 </html>
